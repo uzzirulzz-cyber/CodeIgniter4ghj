@@ -80,7 +80,7 @@ export const AdminDashboard: React.FC = () => {
       const res = await fetch('/api/admin/reset-db', { method: 'POST' });
       const data = await res.json();
       if (data.success) {
-        addToast('success', 'Database Reset', 'All data has been wiped and re-seeded. Reloading...');
+        addToast('success', 'Database Reset', 'Funds, orders, leads, and application data were cleared to zero. Reloading...');
         setIsResetOpen(false);
         setConfirmText('');
         setTimeout(() => window.location.reload(), 1500);
@@ -96,7 +96,7 @@ export const AdminDashboard: React.FC = () => {
   // ---- Mock data for the dashboard cards (kept lightweight, no API churn) ----
 
   // 14-day revenue trend (deterministic, no Math.random on render)
-  const revenueData = [
+  const revenueData = orders.length === 0 && products.length === 0 ? [] : [
     { date: 'Aug 03', revenue: 620 },
     { date: 'Aug 04', revenue: 540 },
     { date: 'Aug 05', revenue: 780 },
@@ -123,7 +123,7 @@ export const AdminDashboard: React.FC = () => {
   const completionRate = totalOrdersCount > 0 ? Math.round((completedOrders / totalOrdersCount) * 100) : 100;
 
   // Traffic sources (deterministic)
-  const trafficSources = [
+  const trafficSources = orders.length === 0 && products.length === 0 ? [] : [
     { label: 'Direct / URL', percent: 52, count: 1492, color: '#3b82f6' },
     { label: 'TikTok Leads & Pixel', percent: 28, count: 882, color: '#8b5cf6' },
     { label: 'Organic Google Search', percent: 14, count: 481, color: '#10b981' },
@@ -145,10 +145,10 @@ export const AdminDashboard: React.FC = () => {
     time: '1h ago',
   }));
   // Fallbacks if no orders in store
-  const notifications = liveNotifications.length > 0 ? liveNotifications : [
+  const notifications = liveNotifications.length > 0 ? liveNotifications : (orders.length === 0 && products.length === 0 ? [] : [
     { title: 'Order Verified', message: 'Megacubic HY300 PRO parcel dispatched via TCS Express #TCS-892182', time: '1h ago' },
     { title: 'New Arrival', message: 'Megacubic HY300Pro Plus with motorized focus now in stock at ZeroByte store.', time: '1h ago' },
-  ];
+  ]);
 
   // Recent orders (last 5)
   const recentOrders = orders.slice(0, 3);

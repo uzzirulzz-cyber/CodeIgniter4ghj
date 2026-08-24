@@ -247,6 +247,8 @@ export interface StoreContextType {
 
   // ====== Support Tickets ======
   supportTickets: SupportTicket[];
+  createSupportTicket: (input: { subject: string; message: string }) => void;
+  replyToSupportTicket: (id: string, message: string) => void;
   updateTicketStatus: (id: string, status: TicketStatus) => void;
   assignTicket: (id: string, assignee: string) => void;
 
@@ -342,8 +344,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [blockLibrary] = useState<BlockLibraryItem[]>(INITIAL_BLOCK_LIBRARY);
 
   // ====== Analytics state (read-only aggregates) ======
-  const [analyticsMetrics] = useState<AnalyticsMetric[]>(ANALYTICS_METRICS);
-  const [funnelSteps] = useState<FunnelStep[]>(FUNNEL_STEPS);
+  const [analyticsMetrics, setAnalyticsMetrics] = useState<AnalyticsMetric[]>(ANALYTICS_METRICS);
+  const [funnelSteps, setFunnelSteps] = useState<FunnelStep[]>(FUNNEL_STEPS);
 
   // ====== Support Tickets state ======
   const [supportTickets, setSupportTickets] = useState<SupportTicket[]>(INITIAL_SUPPORT_TICKETS);
@@ -358,16 +360,16 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [campaigns, setCampaigns] = useState<MarketingCampaign[]>(INITIAL_CAMPAIGNS);
 
   // ====== Financial Balance state (read-only balances) ======
-  const [gatewayBalances] = useState<GatewayBalance[]>(INITIAL_GATEWAY_BALANCES);
+  const [gatewayBalances, setGatewayBalances] = useState<GatewayBalance[]>(INITIAL_GATEWAY_BALANCES);
 
   // ====== JazzCash Transactions state (read-only) ======
-  const [jazzcashTransactions] = useState<JazzCashTransaction[]>(INITIAL_JAZZCASH_TXS);
+  const [jazzcashTransactions, setJazzcashTransactions] = useState<JazzCashTransaction[]>(INITIAL_JAZZCASH_TXS);
 
   // ====== Payment Proofs state ======
   const [paymentProofs, setPaymentProofs] = useState<PaymentProof[]>(INITIAL_PAYMENT_PROOFS);
 
   // ====== Security & Audit Logs state ======
-  const [loginAttempts] = useState<LoginAttempt[]>(INITIAL_LOGIN_ATTEMPTS);
+  const [loginAttempts, setLoginAttempts] = useState<LoginAttempt[]>(INITIAL_LOGIN_ATTEMPTS);
   const [secretRotations, setSecretRotations] = useState<SecretRotation[]>(INITIAL_SECRET_ROTATIONS);
 
   // Cart and wishlist start EMPTY — user adds items by browsing the storefront.
@@ -416,23 +418,46 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Initial fetch from backend if running
   useEffect(() => {
-    fetch('/api/products')
-      .then(res => res.json())
-      .then(data => {
-        if (data.products && Array.isArray(data.products)) {
-          setProducts(data.products);
-        }
-      })
-      .catch(() => {});
+    Promise.all([
+      fetch('/api/products').then(res => res.json()),
+      fetch('/api/orders').then(res => res.json()),
+    ])
+      .then(([productsData, ordersData]) => {
+        const nextProducts = Array.isArray(productsData.products) ? productsData.products : CUSTOM_PRODUCTS;
+        const nextOrders = Array.isArray(ordersData.orders) ? ordersData.orders : INITIAL_ORDERS;
+        const isResetState = nextProducts.length === 0 && nextOrders.length === 0;
 
-    fetch('/api/orders')
-      .then(res => res.json())
-      .then(data => {
-        if (data.orders && Array.isArray(data.orders)) {
-          setOrders(data.orders);
+        setProducts(nextProducts);
+        setOrders(nextOrders);
+
+        // The reset endpoint clears MongoDB, but these admin-only datasets are
+        // client-side demo state. Keep them consistent with the zeroed backend.
+        if (isResetState) {
+          setSupportTickets([]);
+          setScheduledPosts([]);
+          setTiktokLeads([]);
+          setCampaigns([]);
+          setPaymentProofs([]);
+          setAnalyticsMetrics([]);
+          setFunnelSteps([]);
+          setGatewayBalances([]);
+          setJazzcashTransactions([]);
+          setLoginAttempts([]);
+          setSecretRotations([]);
+          setIptvServers([]);
+          setIptvCredentials([]);
+          setWooCommerceConnections([]);
+          setSyncConflicts([]);
+          setSubscriptionPlans([]);
+          setCustomerSubscriptions([]);
+          setWebsitePages([]);
+          setG2GConnector({} as G2GSupplierConnector);
+          setG2GSettings(prev => ({ ...prev, status: 'disconnected', autoSync: false }));
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        // Keep the local demo seed when the API is unavailable.
+      });
   }, []);
 
   const addToast = (type: ToastMessage['type'], title: string, message: string) => {
@@ -977,6 +1002,42 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // Support Tickets
   // =========================================================
 
+  const createSupportTicket = (input: { subject: string; message: string }) => {
+    const now = new Date().toISOString();
+    const customerName = currentUser.id === 'guest' ? 'Website Visitor' : currentUser.name;
+    const customerEmail = currentUser.id === 'guest' ? 'visitor@playbeat.digital' : currentUser.email;
+    const ticket: SupportTicket = {
+      id: `CHAT-${Date.now()}`,
+      subject: input.subject,
+      customerName,
+      customerEmail,
+      priority: 'normal',
+      status: 'open',
+      channel: 'in_app',
+      assignedTo: 'Unassigned',
+      slaMinutesRemaining: 30,
+      createdAt: now,
+      lastReplyAt: now,
+      messageCount: 1,
+      latestMessage: input.message,
+    };
+    setSupportTickets(prev => [ticket, ...prev]);
+    addToast('success', 'Message Sent', 'Your support request is now in the admin inbox.');
+  };
+
+  const replyToSupportTicket = (id: string, message: string) => {
+    const trimmedMessage = message.trim();
+    if (!trimmedMessage) return;
+    setSupportTickets(prev => prev.map(ticket => ticket.id === id ? {
+      ...ticket,
+      latestMessage: trimmedMessage,
+      messageCount: ticket.messageCount + 1,
+      lastReplyAt: new Date().toISOString(),
+      status: 'waiting_on_customer',
+    } : ticket));
+    addToast('success', 'Reply Sent', 'Your response was added to the support conversation.');
+  };
+
   const updateTicketStatus = (id: string, status: TicketStatus) => {
     setSupportTickets(prev => prev.map(t => t.id === id ? { ...t, status, lastReplyAt: new Date().toISOString() } : t));
     const target = supportTickets.find(t => t.id === id);
@@ -1352,6 +1413,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
         // Support Tickets
         supportTickets,
+        createSupportTicket,
+        replyToSupportTicket,
         updateTicketStatus,
         assignTicket,
 

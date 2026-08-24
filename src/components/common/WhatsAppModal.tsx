@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
 import { useStore } from '../../context/StoreContext';
-import { X, MessageCircle, Send, CheckCircle2, ShieldAlert } from 'lucide-react';
+import { X, MessageCircle, Send, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 export const WhatsAppModal: React.FC = () => {
-  const { isWhatsAppModalOpen, setIsWhatsAppModalOpen, addToast } = useStore();
+  const { isWhatsAppModalOpen, setIsWhatsAppModalOpen, createSupportTicket } = useStore();
   const [topic, setTopic] = useState('Product Inquiry / Key Delivery');
   const [message, setMessage] = useState('');
 
   const handleStartChat = (e: React.FormEvent) => {
     e.preventDefault();
-    const encoded = encodeURIComponent(`Hello PlayBeat VIP Support!\n\nTopic: ${topic}\nMessage: ${message || 'I would like assistance with a digital key or smart projector order.'}`);
-    window.open(`https://wa.me/18887529232?text=${encoded}`, '_blank');
-    addToast('success', 'Opening WhatsApp', 'Connecting you to an official PlayBeat support agent.');
+    createSupportTicket({
+      subject: topic,
+      message: message.trim() || 'I would like assistance with a digital key or smart projector order.',
+    });
     setIsWhatsAppModalOpen(false);
+    setMessage('');
   };
 
   return (
@@ -41,7 +43,7 @@ export const WhatsAppModal: React.FC = () => {
                   <MessageCircle className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-white font-display">PlayBeat VIP WhatsApp</h3>
+                  <h3 className="text-base font-bold text-white font-display">PlayBeat Live Chat</h3>
                   <p className="text-xs text-emerald-400 font-mono flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Live Agents Online
                   </p>
@@ -85,7 +87,7 @@ export const WhatsAppModal: React.FC = () => {
 
               <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-300 flex items-start gap-2">
                 <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
-                <span>Direct encrypted communication with verified PlayBeat Digital specialists. Response time: &lt; 2 minutes.</span>
+                <span>Your message goes directly to the PlayBeat admin support inbox. Response time: &lt; 2 minutes.</span>
               </div>
 
               <button
@@ -93,7 +95,7 @@ export const WhatsAppModal: React.FC = () => {
                 className="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-600 text-white text-xs font-bold font-display flex items-center justify-center gap-2 shadow-lg shadow-emerald-950/40 transition-all"
               >
                 <Send className="w-3.5 h-3.5" />
-                <span>Start WhatsApp Conversation</span>
+                <span>Send Message to Support</span>
               </button>
             </form>
           </motion.div>

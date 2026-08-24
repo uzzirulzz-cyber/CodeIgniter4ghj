@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useStore } from '../../context/StoreContext';
 import { TicketPriority, TicketStatus, TicketChannel, SupportTicket } from '../../types';
-import { Ticket, Mail, MessageCircle, Smartphone, AtSign, AlertTriangle, Clock, CheckCircle2, User, Inbox } from 'lucide-react';
+import { Ticket, Mail, MessageCircle, Smartphone, AtSign, AlertTriangle, Clock, CheckCircle2, User, Inbox, Send } from 'lucide-react';
 
 const PRIORITY_META: Record<TicketPriority, { pill: string; label: string; color: string }> = {
   low: { pill: 'admin-pill-blue', label: 'Low', color: 'text-blue-400' },
@@ -42,8 +42,9 @@ const formatSla = (minutes: number): string => {
 };
 
 export const SupportTickets: React.FC = () => {
-  const { supportTickets, updateTicketStatus, assignTicket, addToast } = useStore();
+  const { supportTickets, replyToSupportTicket, updateTicketStatus, assignTicket } = useStore();
   const [statusFilter, setStatusFilter] = useState<'all' | TicketStatus>('all');
+  const [replyDrafts, setReplyDrafts] = useState<Record<string, string>>({});
 
   const filtered = statusFilter === 'all' ? supportTickets : supportTickets.filter(t => t.status === statusFilter);
 
@@ -171,6 +172,39 @@ export const SupportTickets: React.FC = () => {
                         </span>
                       )}
                     </div>
+                    {ticket.latestMessage && (
+                      <div className="mt-3 rounded-lg bg-[#0f141c] border border-[#1f2937] px-3 py-2 text-xs text-gray-300">
+                        {ticket.latestMessage}
+                      </div>
+                    )}
+
+                    {ticket.status !== 'closed' && ticket.status !== 'resolved' && (
+                      <div className="flex items-center gap-2 mt-3">
+                        <input
+                          value={replyDrafts[ticket.id] || ''}
+                          onChange={(event) => setReplyDrafts(prev => ({ ...prev, [ticket.id]: event.target.value }))}
+                          placeholder="Reply to this customer..."
+                          className="input-sharp flex-1 px-3 py-2 text-xs text-white"
+                          onKeyDown={(event) => {
+                            if (event.key === 'Enter' && !event.shiftKey) {
+                              event.preventDefault();
+                              replyToSupportTicket(ticket.id, replyDrafts[ticket.id] || '');
+                              setReplyDrafts(prev => ({ ...prev, [ticket.id]: '' }));
+                            }
+                          }}
+                        />
+                        <button
+                          onClick={() => {
+                            replyToSupportTicket(ticket.id, replyDrafts[ticket.id] || '');
+                            setReplyDrafts(prev => ({ ...prev, [ticket.id]: '' }));
+                          }}
+                          disabled={!replyDrafts[ticket.id]?.trim()}
+                          className="px-3 py-2 rounded-md bg-purple-600 hover:bg-purple-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-[10px] font-bold uppercase tracking-wider flex items-center gap-1"
+                        >
+                          <Send className="w-3 h-3" /> Reply
+                        </button>
+                      </div>
+                    )}
 
                     <div className="flex items-center gap-2 mt-3 pt-3 border-t border-[#1f2937]">
                       {ticket.status !== 'resolved' && ticket.status !== 'closed' && (

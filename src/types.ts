@@ -613,6 +613,7 @@ export interface SupportTicket {
   createdAt: string;
   lastReplyAt: string;
   messageCount: number;
+  latestMessage?: string;
 }
 
 // ============================================
