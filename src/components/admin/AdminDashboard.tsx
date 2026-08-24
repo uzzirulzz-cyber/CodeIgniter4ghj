@@ -120,7 +120,7 @@ export const AdminDashboard: React.FC = () => {
   const completedOrders = orders.filter(o => o.orderStatus === 'completed').length;
   const processingOrders = orders.filter(o => o.orderStatus === 'processing').length;
   const totalOrdersCount = orders.length;
-  const completionRate = totalOrdersCount > 0 ? Math.round((completedOrders / totalOrdersCount) * 100) : 100;
+  const completionRate = totalOrdersCount > 0 ? Math.round((completedOrders / totalOrdersCount) * 100) : 0;
 
   // Traffic sources (deterministic)
   const trafficSources = orders.length === 0 && products.length === 0 ? [] : [

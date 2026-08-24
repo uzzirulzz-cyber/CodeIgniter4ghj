@@ -214,6 +214,11 @@ export const AdminLayout: React.FC = () => {
       const data = await response.json();
       if (!response.ok || !data.success) throw new Error(data.error || 'Reset failed.');
       addToast('success', 'Dashboard Reset', 'Funds, orders, leads, and application data were cleared to zero.');
+      try {
+        localStorage.setItem('playbeat-zero-state', 'true');
+      } catch {
+        // The backend reset still succeeds if browser storage is unavailable.
+      }
       window.location.reload();
     } catch (error) {
       addToast('error', 'Reset Failed', error instanceof Error ? error.message : 'Could not reset dashboard data.');

@@ -286,7 +286,15 @@ export interface StoreContextType {
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
 
 export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [products, setProducts] = useState<Product[]>(CUSTOM_PRODUCTS);
+  const isZeroState = (() => {
+    try {
+      return localStorage.getItem('playbeat-zero-state') === 'true';
+    } catch {
+      return false;
+    }
+  })();
+
+  const [products, setProducts] = useState<Product[]>(isZeroState ? [] : CUSTOM_PRODUCTS);
   const [categories] = useState<Category[]>(CUSTOM_CATEGORIES);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -328,49 +336,49 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   // ====== IPTV M3U Servers state ======
-  const [iptvServers, setIptvServers] = useState<IptvServer[]>(INITIAL_IPTV_SERVERS);
-  const [iptvCredentials, setIptvCredentials] = useState<IptvCredential[]>(INITIAL_IPTV_CREDENTIALS);
+  const [iptvServers, setIptvServers] = useState<IptvServer[]>(isZeroState ? [] : INITIAL_IPTV_SERVERS);
+  const [iptvCredentials, setIptvCredentials] = useState<IptvCredential[]>(isZeroState ? [] : INITIAL_IPTV_CREDENTIALS);
 
   // ====== WooCommerce Bridge state ======
-  const [wooCommerceConnections, setWooCommerceConnections] = useState<WooCommerceConnection[]>(INITIAL_WOOCOMMERCE_CONNECTIONS);
-  const [syncConflicts, setSyncConflicts] = useState<SyncConflict[]>(INITIAL_SYNC_CONFLICTS);
+  const [wooCommerceConnections, setWooCommerceConnections] = useState<WooCommerceConnection[]>(isZeroState ? [] : INITIAL_WOOCOMMERCE_CONNECTIONS);
+  const [syncConflicts, setSyncConflicts] = useState<SyncConflict[]>(isZeroState ? [] : INITIAL_SYNC_CONFLICTS);
 
   // ====== Subscriptions state ======
-  const [subscriptionPlans, setSubscriptionPlans] = useState<SubscriptionPlan[]>(INITIAL_SUBSCRIPTION_PLANS);
-  const [customerSubscriptions, setCustomerSubscriptions] = useState<CustomerSubscription[]>(INITIAL_CUSTOMER_SUBSCRIPTIONS);
+  const [subscriptionPlans, setSubscriptionPlans] = useState<SubscriptionPlan[]>(isZeroState ? [] : INITIAL_SUBSCRIPTION_PLANS);
+  const [customerSubscriptions, setCustomerSubscriptions] = useState<CustomerSubscription[]>(isZeroState ? [] : INITIAL_CUSTOMER_SUBSCRIPTIONS);
 
   // ====== Website Builder state ======
-  const [websitePages, setWebsitePages] = useState<WebsitePage[]>(INITIAL_WEBSITE_PAGES);
+  const [websitePages, setWebsitePages] = useState<WebsitePage[]>(isZeroState ? [] : INITIAL_WEBSITE_PAGES);
   const [blockLibrary] = useState<BlockLibraryItem[]>(INITIAL_BLOCK_LIBRARY);
 
   // ====== Analytics state (read-only aggregates) ======
-  const [analyticsMetrics, setAnalyticsMetrics] = useState<AnalyticsMetric[]>(ANALYTICS_METRICS);
-  const [funnelSteps, setFunnelSteps] = useState<FunnelStep[]>(FUNNEL_STEPS);
+  const [analyticsMetrics, setAnalyticsMetrics] = useState<AnalyticsMetric[]>(isZeroState ? [] : ANALYTICS_METRICS);
+  const [funnelSteps, setFunnelSteps] = useState<FunnelStep[]>(isZeroState ? [] : FUNNEL_STEPS);
 
   // ====== Support Tickets state ======
-  const [supportTickets, setSupportTickets] = useState<SupportTicket[]>(INITIAL_SUPPORT_TICKETS);
+  const [supportTickets, setSupportTickets] = useState<SupportTicket[]>(isZeroState ? [] : INITIAL_SUPPORT_TICKETS);
 
   // ====== Social Automation state ======
-  const [scheduledPosts, setScheduledPosts] = useState<ScheduledPost[]>(INITIAL_SCHEDULED_POSTS);
+  const [scheduledPosts, setScheduledPosts] = useState<ScheduledPost[]>(isZeroState ? [] : INITIAL_SCHEDULED_POSTS);
 
   // ====== TikTok Leads state ======
-  const [tiktokLeads, setTiktokLeads] = useState<TikTokLead[]>(INITIAL_TIKTOK_LEADS);
+  const [tiktokLeads, setTiktokLeads] = useState<TikTokLead[]>(isZeroState ? [] : INITIAL_TIKTOK_LEADS);
 
   // ====== Email & SMS Campaigns state ======
-  const [campaigns, setCampaigns] = useState<MarketingCampaign[]>(INITIAL_CAMPAIGNS);
+  const [campaigns, setCampaigns] = useState<MarketingCampaign[]>(isZeroState ? [] : INITIAL_CAMPAIGNS);
 
   // ====== Financial Balance state (read-only balances) ======
-  const [gatewayBalances, setGatewayBalances] = useState<GatewayBalance[]>(INITIAL_GATEWAY_BALANCES);
+  const [gatewayBalances, setGatewayBalances] = useState<GatewayBalance[]>(isZeroState ? [] : INITIAL_GATEWAY_BALANCES);
 
   // ====== JazzCash Transactions state (read-only) ======
-  const [jazzcashTransactions, setJazzcashTransactions] = useState<JazzCashTransaction[]>(INITIAL_JAZZCASH_TXS);
+  const [jazzcashTransactions, setJazzcashTransactions] = useState<JazzCashTransaction[]>(isZeroState ? [] : INITIAL_JAZZCASH_TXS);
 
   // ====== Payment Proofs state ======
-  const [paymentProofs, setPaymentProofs] = useState<PaymentProof[]>(INITIAL_PAYMENT_PROOFS);
+  const [paymentProofs, setPaymentProofs] = useState<PaymentProof[]>(isZeroState ? [] : INITIAL_PAYMENT_PROOFS);
 
   // ====== Security & Audit Logs state ======
-  const [loginAttempts, setLoginAttempts] = useState<LoginAttempt[]>(INITIAL_LOGIN_ATTEMPTS);
-  const [secretRotations, setSecretRotations] = useState<SecretRotation[]>(INITIAL_SECRET_ROTATIONS);
+  const [loginAttempts, setLoginAttempts] = useState<LoginAttempt[]>(isZeroState ? [] : INITIAL_LOGIN_ATTEMPTS);
+  const [secretRotations, setSecretRotations] = useState<SecretRotation[]>(isZeroState ? [] : INITIAL_SECRET_ROTATIONS);
 
   // Cart and wishlist start EMPTY — user adds items by browsing the storefront.
   // No pre-seeded cart items or wishlist items on first visit.
@@ -394,7 +402,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     createdAt: new Date().toISOString(),
   };
   const [currentUser, setCurrentUser] = useState<User>(GUEST_USER);
-  const [orders, setOrders] = useState<Order[]>(INITIAL_ORDERS);
+  const [orders, setOrders] = useState<Order[]>(isZeroState ? [] : INITIAL_ORDERS);
   const [content, setContent] = useState<ContentSection>(INITIAL_CONTENT);
   const [coupons, setCoupons] = useState<Coupon[]>(INITIAL_COUPONS);
   const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
@@ -427,12 +435,16 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         const nextOrders = Array.isArray(ordersData.orders) ? ordersData.orders : INITIAL_ORDERS;
         const isResetState = nextProducts.length === 0 && nextOrders.length === 0;
 
-        setProducts(nextProducts);
-        setOrders(nextOrders);
+        // A confirmed local reset must win over stale API responses or a
+        // database that has not finished propagating its zero-state marker.
+        if (!isZeroState) {
+          setProducts(nextProducts);
+          setOrders(nextOrders);
+        }
 
         // The reset endpoint clears MongoDB, but these admin-only datasets are
         // client-side demo state. Keep them consistent with the zeroed backend.
-        if (isResetState) {
+        if (isZeroState || isResetState) {
           setSupportTickets([]);
           setScheduledPosts([]);
           setTiktokLeads([]);
