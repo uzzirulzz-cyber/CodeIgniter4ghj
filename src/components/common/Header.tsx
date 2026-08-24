@@ -212,9 +212,28 @@ export const Header: React.FC = () => {
             <img
               src={brandingLogoUrl}
               alt="PlayBeat Digital"
-              className="w-32 sm:w-40 h-auto object-contain transition-transform duration-300 group-hover:scale-[1.03]"
+              width={200}
+              height={150}
+              className="header-logo w-[200px] h-[150px] object-contain transition-transform duration-300 group-hover:scale-[1.03]"
             />
           </button>
+
+          {currentUser.id === 'guest' && (
+            <div className="header-auth-actions hidden md:flex items-center gap-2">
+              <button
+                onClick={() => { setAuthMode('login'); setIsAuthModalOpen(true); }}
+                className="px-3 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider text-emerald-400 hover:bg-emerald-500/10 border border-emerald-500/30 transition-all"
+              >
+                Sign In
+              </button>
+              <button
+                onClick={() => { setAuthMode('signup'); setIsAuthModalOpen(true); }}
+                className="btn-glossy btn-glossy-yellow btn-glossy-sm !px-3 !py-2 !text-[10px]"
+              >
+                Sign Up
+              </button>
+            </div>
+          )}
 
           {/* CATEGORIES BUTTON (DESKTOP) */}
           <div className="relative hidden md:block">
@@ -603,22 +622,6 @@ export const Header: React.FC = () => {
               <Flame className="w-3.5 h-3.5 text-[#FF304F]" />
               <span>Cyber Drops</span>
             </button>
-            {currentUser.id === 'guest' && (
-              <div className="header-auth-actions flex items-center gap-2.5 border-l border-[#26334A] pl-5">
-                <button
-                  onClick={() => { setAuthMode('login'); setIsAuthModalOpen(true); }}
-                  className="px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider text-emerald-400 hover:bg-emerald-500/10 border border-emerald-500/30 transition-all"
-                >
-                  Sign In
-                </button>
-                <button
-                  onClick={() => { setAuthMode('signup'); setIsAuthModalOpen(true); }}
-                  className="btn-glossy btn-glossy-yellow btn-glossy-sm !px-3 !py-1 !text-[10px]"
-                >
-                  Sign Up
-                </button>
-              </div>
-            )}
           </div>
         </div>
       </div>
