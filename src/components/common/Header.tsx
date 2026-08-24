@@ -212,28 +212,11 @@ export const Header: React.FC = () => {
             <img
               src={brandingLogoUrl}
               alt="PlayBeat Digital"
-              width={200}
-              height={150}
-              className="header-logo w-[200px] h-[150px] object-contain transition-transform duration-300 group-hover:scale-[1.03]"
+              width={120}
+              height={64}
+              className="header-logo w-[120px] h-[64px] object-contain transition-transform duration-300 group-hover:scale-[1.03]"
             />
           </button>
-
-          {currentUser.id === 'guest' && (
-            <div className="header-auth-actions hidden md:flex items-center gap-2">
-              <button
-                onClick={() => { setAuthMode('login'); setIsAuthModalOpen(true); }}
-                className="px-3 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider text-emerald-400 hover:bg-emerald-500/10 border border-emerald-500/30 transition-all"
-              >
-                Sign In
-              </button>
-              <button
-                onClick={() => { setAuthMode('signup'); setIsAuthModalOpen(true); }}
-                className="btn-glossy btn-glossy-yellow btn-glossy-sm !px-3 !py-2 !text-[10px]"
-              >
-                Sign Up
-              </button>
-            </div>
-          )}
 
           {/* CATEGORIES BUTTON (DESKTOP) */}
           <div className="relative hidden md:block">
@@ -396,6 +379,24 @@ export const Header: React.FC = () => {
 
         {/* 4. ACTIONS & SHORTCUTS */}
         <div className="header-actions flex items-center gap-3 lg:gap-4">
+          {/* DESKTOP AUTH ACTIONS — kept with the right-side controls */}
+          {currentUser.id === 'guest' && (
+            <div className="header-auth-actions hidden md:flex items-center gap-2">
+              <button
+                onClick={() => { setAuthMode('login'); setIsAuthModalOpen(true); }}
+                className="px-3 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider text-emerald-400 hover:bg-emerald-500/10 border border-emerald-500/30 transition-all"
+              >
+                Sign In
+              </button>
+              <button
+                onClick={() => { setAuthMode('signup'); setIsAuthModalOpen(true); }}
+                className="btn-glossy btn-glossy-yellow btn-glossy-sm !px-3 !py-2 !text-[10px]"
+              >
+                Sign Up
+              </button>
+            </div>
+          )}
+
           {/* CURRENCY SELECTOR */}
           <div className="relative hidden lg:block">
             <button
@@ -563,8 +564,8 @@ export const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* 5. QUICK NAVIGATION BAR (SUB-HEADER WITH PROMO & CUSTOM NAV ITEMS) */}
-      <div className="hidden md:block w-full border-t border-[#26334A] bg-[#070B14] px-4 sm:px-6">
+      {/* 5. QUICK NAVIGATION BAR — directly below the main header */}
+      <div className="storefront-subnav storefront-subnav-promos hidden md:block w-full border-t border-[#26334A] bg-[#070B14] px-4 sm:px-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between overflow-x-auto no-scrollbar py-1 text-xs uppercase tracking-wider">
           <div className="flex items-center gap-3 text-xs text-slate-300 font-medium">
             <button
@@ -626,8 +627,8 @@ export const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* 5b. CATEGORY NAV BAR — Video Streaming / Games / Top Up / AI Tools / Smart Projectors + Sign In / Sign Up */}
-      <div className="hidden md:block w-full border-t border-[#26334A] bg-[#050810] px-4 sm:px-6">
+      {/* 5b. CATEGORY NAV BAR — directly below the quick navigation bar */}
+      <div className="storefront-subnav storefront-subnav-categories hidden md:block w-full border-t border-[#26334A] bg-[#050810] px-4 sm:px-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 py-1 overflow-x-auto no-scrollbar">
           {/* Left: category buttons */}
           <div className="flex items-center gap-1">
