@@ -195,7 +195,7 @@ export const Header: React.FC = () => {
       )}
 
       {/* 2. MAIN HEADER NAVIGATION */}
-      <div className="storefront-main-nav max-w-7xl mx-auto w-full px-4 sm:px-6 py-1 flex items-center justify-between gap-3 lg:gap-5">
+      <div className="storefront-main-nav order-3 max-w-7xl mx-auto w-full px-4 sm:px-6 py-1 flex items-center justify-between gap-3 lg:gap-5">
         {/* BRAND LOGO */}
         <div className="flex items-center gap-6">
           <button
@@ -564,7 +564,7 @@ export const Header: React.FC = () => {
       </div>
 
       {/* 5. QUICK NAVIGATION BAR (SUB-HEADER WITH PROMO & CUSTOM NAV ITEMS) */}
-      <div className="hidden md:block w-full border-t border-[#26334A] bg-[#070B14] px-4 sm:px-6">
+      <div className="order-1 hidden md:block w-full border-t border-[#26334A] bg-[#070B14] px-4 sm:px-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between overflow-x-auto no-scrollbar py-1 text-xs uppercase tracking-wider">
           <div className="flex items-center gap-3 text-xs text-slate-300 font-medium">
             <button
@@ -627,7 +627,7 @@ export const Header: React.FC = () => {
       </div>
 
       {/* 5b. CATEGORY NAV BAR — Video Streaming / Games / Top Up / AI Tools / Smart Projectors + Sign In / Sign Up */}
-      <div className="hidden md:block w-full border-t border-[#26334A] bg-[#050810] px-4 sm:px-6">
+      <div className="order-2 hidden md:block w-full border-t border-[#26334A] bg-[#050810] px-4 sm:px-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 py-1 overflow-x-auto no-scrollbar">
           {/* Left: category buttons */}
           <div className="flex items-center gap-1">
@@ -681,7 +681,7 @@ export const Header: React.FC = () => {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="md:hidden border-t border-[#26334A] bg-[#070B14] px-4 py-4 space-y-4 shadow-2xl"
+            className="order-4 md:hidden border-t border-[#26334A] bg-[#070B14] px-4 py-4 space-y-4 shadow-2xl"
           >
             {/* Mobile Search */}
             <div className="relative">
