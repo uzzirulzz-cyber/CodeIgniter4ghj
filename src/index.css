@@ -15,11 +15,11 @@
 }
 
 .storefront-announcement {
-  order: 1;
+  order: 1 !important;
 }
 
 .storefront-main-nav {
-  order: 4;
+  order: 4 !important;
 }
 
 .storefront-subnav {
@@ -27,11 +27,11 @@
 }
 
 .storefront-subnav-promos {
-  order: 2;
+  order: 2 !important;
 }
 
 .storefront-subnav-categories {
-  order: 3;
+  order: 3 !important;
 }
 
 .footer-admin-profile {
