@@ -176,14 +176,6 @@ export const AdminDashboard: React.FC = () => {
           <button className="btn-glossy btn-glossy-dark btn-glossy-sm"><Calendar className="w-3.5 h-3.5" />This Week<ChevronDown className="w-3 h-3" /></button>
           <button className="btn-glossy btn-glossy-dark btn-glossy-sm"><Download className="w-3.5 h-3.5" />Export<ChevronDown className="w-3 h-3" /></button>
           <button onClick={() => window.location.reload()} className="btn-glossy btn-glossy-yellow btn-glossy-sm !text-black"><RefreshCw className="w-3.5 h-3.5" />Refresh</button>
-          <button
-            onClick={() => setIsResetOpen(true)}
-            className="btn-glossy btn-glossy-red btn-glossy-sm"
-            aria-label="Reset all dashboard data"
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-            <span>Reset Data</span>
-          </button>
         </div>
       </div>
 

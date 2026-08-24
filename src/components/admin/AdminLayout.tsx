@@ -63,6 +63,7 @@ import {
   Bell,
   Plus,
   Upload,
+  RotateCcw,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuthStore } from '../../store/useAuthStore';
@@ -199,6 +200,24 @@ export const AdminLayout: React.FC = () => {
     });
     addToast('info', 'Signed Out', 'You have been logged out.');
     setActiveView('store');
+  };
+
+  const handleReset = async () => {
+    const confirmation = window.prompt('This clears all dashboard data. Type RESET to continue:');
+    if (confirmation !== 'RESET') {
+      if (confirmation !== null) addToast('error', 'Reset Cancelled', 'Type RESET exactly to confirm.');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/admin/reset-db', { method: 'POST' });
+      const data = await response.json();
+      if (!response.ok || !data.success) throw new Error(data.error || 'Reset failed.');
+      addToast('success', 'Dashboard Reset', 'Funds, orders, leads, and application data were cleared to zero.');
+      window.location.reload();
+    } catch (error) {
+      addToast('error', 'Reset Failed', error instanceof Error ? error.message : 'Could not reset dashboard data.');
+    }
   };
 
   const handleTabSelect = (id: string) => {
@@ -599,6 +618,15 @@ export const AdminLayout: React.FC = () => {
               title="Notifications"
             >
               <Bell className="w-4 h-4" />
+            </button>
+
+            <button
+              onClick={handleReset}
+              className="btn-glossy btn-glossy-red btn-glossy-sm"
+              title="Reset all dashboard data"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline normal-case tracking-normal">Reset Data</span>
             </button>
           </div>
         </header>
