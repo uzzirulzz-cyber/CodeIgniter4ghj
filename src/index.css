@@ -3,7 +3,7 @@
 /* Storefront header rhythm: keep account actions distinct from cart and nav links. */
 .header-actions {
   flex-shrink: 0;
-  margin-left: .5rem;
+  margin-left: auto;
 }
 
 .storefront-main-nav {
@@ -14,16 +14,24 @@
   min-width: 0;
 }
 
+.storefront-announcement {
+  order: 1;
+}
+
+.storefront-main-nav {
+  order: 4;
+}
+
 .storefront-subnav {
   flex-shrink: 0;
 }
 
 .storefront-subnav-promos {
-  order: 3;
+  order: 2;
 }
 
 .storefront-subnav-categories {
-  order: 4;
+  order: 3;
 }
 
 .footer-admin-profile {
@@ -88,7 +96,7 @@
 }
 
 @media (max-width: 1023px) {
-  .header-actions { gap: .625rem; margin-left: .25rem; }
+  .header-actions { gap: .625rem; margin-left: auto; }
   .header-profile { margin-left: 0; padding-left: .5rem; }
 }
 

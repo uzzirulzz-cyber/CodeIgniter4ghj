@@ -165,7 +165,7 @@ export const Header: React.FC = () => {
     <header className="sticky top-0 z-40 w-full flex flex-col bg-[#08152F]/95 backdrop-blur-xl border-b border-[#26334A] shadow-2xl">
       {/* 1. ANNOUNCEMENT BAR */}
       {content.announcementBar.enabled && (
-        <div className="w-full bg-[#070B14] border-b border-[#26334A]/80 py-1 px-4 text-xs text-slate-300 font-medium">
+        <div className="storefront-announcement w-full bg-[#070B14] border-b border-[#26334A]/80 py-1 px-4 text-xs text-slate-300 font-medium">
           <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
             <div className="flex items-center gap-2 overflow-hidden text-ellipsis whitespace-nowrap">
               {content.announcementBar.badgeText && (
